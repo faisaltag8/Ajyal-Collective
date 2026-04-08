@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajyal Collective — Democratizing Equity Research</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            ink: {
+              950: '#080808',
+              900: '#0f0f0f',
+              800: '#161616',
+              700: '#1e1e1e',
+              600: '#272727',
+              500: '#383838',
+              400: '#5a5a5a',
+              300: '#7c7c7c',
+              200: '#a8a8a8',
+              100: '#d4d4d4',
+              50:  '#f0f0f0',
+            },
+            gold: {
+              DEFAULT: '#c8a96e',
+              light: '#dfc49a',
+              dark: '#9a7a42',
+              muted: 'rgba(200,169,110,0.15)',
+            },
+          },
+          letterSpacing: {
+            display: '-0.03em',
+            caps: '0.18em',
+          },
+          lineHeight: {
+            body: '1.75',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #0f0f0f;
+      color: #d4d4d4;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* Radial glow backgrounds */
+    .bg-glow-hero {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(200,169,110,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 30%, rgba(200,169,110,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(255,255,255,0.02) 0%, transparent 70%),
+        #0f0f0f;
+    }
+
+    .bg-glow-section {
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(200,169,110,0.05) 0%, transparent 70%),
+        transparent;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(15,15,15,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Typography */
+    .heading-display {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    .heading-serif {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .label-caps {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #c8a96e;
+    }
+
+    /* Cards */
+    .card-base {
+      background: linear-gradient(135deg, rgba(30,30,30,0.9) 0%, rgba(22,22,22,0.9) 100%);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 2px;
+      transition: border-color 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .card-base:hover {
+      border-color: rgba(200,169,110,0.3);
+      box-shadow: 0 8px 40px rgba(200,169,110,0.08), 0 2px 8px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    .card-elevated {
+      background: linear-gradient(135deg, rgba(38,38,38,0.95) 0%, rgba(28,28,28,0.95) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
+      transition: border-color 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .card-elevated:hover {
+      border-color: rgba(200,169,110,0.25);
+      box-shadow: 0 16px 60px rgba(200,169,110,0.07), 0 4px 16px rgba(0,0,0,0.5);
+      transform: translateY(-3px);
+    }
+
+    /* Gold divider */
+    .divider-gold {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, #c8a96e, transparent);
+    }
+
+    /* Sector pill */
+    .sector-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid rgba(200,169,110,0.25);
+      border-radius: 1px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #c8a96e;
+      background: rgba(200,169,110,0.06);
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .sector-pill:hover, .sector-pill:focus-visible {
+      background: rgba(200,169,110,0.14);
+      border-color: rgba(200,169,110,0.5);
+      color: #dfc49a;
+      outline: none;
+    }
+
+    .sector-pill:active {
+      transform: scale(0.97);
+    }
+
+    /* Nav links */
+    .nav-link {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7c7c7c;
+      transition: color 0.2s ease;
+      padding: 0.25rem 0;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0;
+      width: 0; height: 1px;
+      background: #c8a96e;
+      transition: width 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .nav-link:hover { color: #d4d4d4; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible { color: #c8a96e; outline: none; }
+    .nav-link:focus-visible::after { width: 100%; }
+
+    /* CTA Button */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      background: #c8a96e;
+      color: #080808;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 1px;
+      cursor: pointer;
+      transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 4px 20px rgba(200,169,110,0.25);
+    }
+
+    .btn-primary:hover {
+      background: #dfc49a;
+      box-shadow: 0 8px 32px rgba(200,169,110,0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid #c8a96e;
+      outline-offset: 3px;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98) translateY(0);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      background: transparent;
+      color: #a8a8a8;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 1px;
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .btn-outline:hover {
+      color: #f0f0f0;
+      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.3);
+      outline-offset: 3px;
+    }
+
+    .btn-outline:active {
+      transform: scale(0.98);
+    }
+
+    /* Research card */
+    .research-card {
+      background: linear-gradient(160deg, rgba(36,36,36,0.95) 0%, rgba(26,26,26,0.95) 100%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 2px;
+      transition: border-color 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
+    }
+
+    .research-card:hover {
+      border-color: rgba(200,169,110,0.2);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(200,169,110,0.08);
+      transform: translateY(-4px);
+    }
+
+    .research-card:focus-visible {
+      outline: 2px solid rgba(200,169,110,0.5);
+      outline-offset: 2px;
+    }
+
+    .research-card:active {
+      transform: translateY(-2px);
+    }
+
+    /* Analyst tag */
+    .analyst-tag {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1px;
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: #9a9a9a;
+      letter-spacing: 0.02em;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    /* Scroll reveal — content visible by default, JS adds animation */
+    .reveal {
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .js-loaded .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    .js-loaded .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Logo image */
+    .logo-img {
+      height: 28px;
+      width: auto;
+      filter: brightness(1);
+    }
+
+    /* Section spacing tokens */
+    .section-pad { padding: 7rem 0; }
+    .section-pad-sm { padding: 5rem 0; }
+
+    /* Number stat */
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 3rem;
+      letter-spacing: -0.03em;
+      color: #f0f0f0;
+      line-height: 1;
+    }
+
+    /* Horizontal rule */
+    .hr-subtle {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Gold accent bar on cards */
+    .accent-bar {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, #c8a96e 0%, transparent 100%);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Sector photo card */
+    .sector-photo-card {
+      position: relative !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      aspect-ratio: 4/3;
+      cursor: pointer !important;
+    }
+    .sector-photo-card img.sector-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+      display: block;
+    }
+    .sector-photo-card:hover img.sector-bg { transform: scale(1.06); }
+    .sector-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.15) 100%);
+      transition: background 0.3s ease;
+    }
+    .sector-photo-card:hover .sector-overlay {
+      background: linear-gradient(0deg, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.25) 100%);
+    }
+    .sector-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.25rem 1.5rem;
+      z-index: 1;
+    }
+    .sector-photo-card.active .sector-overlay {
+      background: linear-gradient(0deg, rgba(30,22,8,0.95) 0%, rgba(30,22,8,0.6) 55%, rgba(30,22,8,0.3) 100%) !important;
+    }
+    .sector-photo-card.active .sector-content .label-caps { color: #dfc49a !important; }
+
+    /* Company logo badge on research cards */
+    .company-logo-wrap {
+      background: rgba(255,255,255,0.96);
+      border-radius: 4px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      min-width: 72px;
+      max-width: 130px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .company-logo-wrap img {
+      max-height: 32px;
+      max-width: 110px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .company-logo-initials {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      min-width: 72px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #d4d4d4;
+      letter-spacing: 0.05em;
+    }
+
+    /* Logo strip (Companies We Cover section) */
+    .logo-strip-badge {
+      background: rgba(255,255,255,0.96);
+      border-radius: 6px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 68px;
+      width: 120px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+      transition: box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .logo-strip-badge img {
+      max-height: 40px;
+      max-width: 90px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .logo-strip-item:hover .logo-strip-badge {
+      box-shadow: 0 8px 28px rgba(200,169,110,0.18), 0 2px 8px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
+    }
+    .logo-strip-initials {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 68px;
+      width: 120px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c8a96e;
+      letter-spacing: 0.06em;
+    }
+
+    /* Hero canvas */
+    #hero-canvas {
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1;
+      cursor: grab;
+      display: block;
+    }
+    #hero-canvas:active { cursor: grabbing; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Sector card active filter state */
+    .sector-card { cursor: pointer !important; }
+    .sector-card.active {
+      border-color: rgba(200,169,110,0.5) !important;
+      background: linear-gradient(135deg, rgba(50,42,28,0.95) 0%, rgba(38,32,20,0.95) 100%) !important;
+    }
+    .sector-card.active .label-caps { color: #dfc49a; }
+
+    /* Research card hidden when filtered */
+    .research-card.filtered-out {
+      display: none !important;
+    }
+
+    /* Filter reset button */
+    .btn-filter-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.9rem;
+      background: rgba(200,169,110,0.1);
+      border: 1px solid rgba(200,169,110,0.3);
+      border-radius: 1px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c8a96e;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-filter-reset:hover { background: rgba(200,169,110,0.18); }
+
+    /* Sector lead photo card */
+    /* Sector lead card — circular photo, no rectangle */
+    .lead-card {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      cursor: default;
+      overflow: visible !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: none !important;
+    }
+    .lead-card:hover { transform: translateY(-3px); }
+    .lead-photo {
+      aspect-ratio: 1;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      border-radius: 10px;
+      border: none;
+      transition: box-shadow 0.3s ease;
+    }
+    .lead-card:hover .lead-photo {
+      box-shadow: 0 0 0 2px rgba(200,169,110,0.4);
+    }
+    .lead-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transform: scale(1.22);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      display: block;
+      border-radius: 0;
+    }
+    .lead-card:hover .lead-photo img { transform: scale(1.28); }
+    .lead-info { padding: 0.75rem 0.5rem 0.5rem; }
+
+    /* Analyst photo card — circular photos */
+    .analyst-card {
+      background: transparent;
+      border: none;
+      overflow: visible;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .analyst-card:hover { transform: translateY(-3px); }
+    .analyst-photo {
+      aspect-ratio: 1;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+      border: none;
+      transition: box-shadow 0.3s ease;
+    }
+    .analyst-card:hover .analyst-photo {
+      box-shadow: 0 0 0 2px rgba(200,169,110,0.4);
+    }
+    .analyst-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transform: scale(1.22);
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      display: block;
+      border-radius: 0;
+    }
+    .analyst-card:hover .analyst-photo img { transform: scale(1.28); }
+    .analyst-info { padding: 0.5rem 0.25rem 0.25rem; }
+
+    /* Team card */
+    .team-card {
+      background: linear-gradient(135deg, rgba(42,42,42,0.95) 0%, rgba(32,32,32,0.95) 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 2px;
+      transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease;
+    }
+
+    .team-card:hover {
+      border-color: rgba(200,169,110,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Floating badge */
+    .badge-nonprofit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.8rem;
+      background: rgba(200,169,110,0.08);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 100px;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c8a96e;
+    }
+
+    /* Responsive container */
+    .container-site {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .container-site { padding: 0 1.25rem; }
+      .section-pad { padding: 4rem 0; }
+      .stat-number { font-size: 2.25rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ NAV ═══════════════════════════════════════════════════════════ -->
+  <nav>
+    <div class="container-site" style="display:flex; align-items:center; justify-content:space-between; height:64px;">
+      <a href="#" aria-label="Ajyal Collective home" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;">
+        <span style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:#f0f0f0; letter-spacing:-0.02em; line-height:1;">AC</span>
+        <span style="width:1px; height:20px; background:rgba(255,255,255,0.15);"></span>
+        <span style="font-size:0.6rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:#a8a8a8;">Ajyal Collective</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div style="display:flex; align-items:center; gap:2.5rem;" class="hidden-mobile">
+        <a href="#sectors" class="nav-link" style="text-decoration:none;">Sectors</a>
+        <a href="#research" class="nav-link" style="text-decoration:none;">Research</a>
+        <a href="#about" class="nav-link" style="text-decoration:none;">About</a>
+        <a href="#team" class="nav-link" style="text-decoration:none;">Team</a>
+        <a href="https://www.linkedin.com/company/ajyal-collective" target="_blank" rel="noopener" class="btn-primary" style="padding:0.55rem 1.25rem; font-size:0.65rem;">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ══════════════════════════════════════════════════════════ -->
+  <section class="bg-glow-hero" style="padding-top: 160px; padding-bottom: 120px; position:relative; overflow:hidden;">
+    <!-- decorative lines -->
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:100%;background:linear-gradient(180deg,rgba(200,169,110,0.15) 0%,transparent 100%);pointer-events:none;"></div>
+
+    <div class="container-site" style="position:relative;">
+      <div class="hero-grid">
+        <!-- Left: text content -->
+        <div>
+          <div style="margin-bottom:1.75rem; display:flex; align-items:center; gap:0.75rem;">
+            <span style="font-family:'Playfair Display',serif; font-size:2.6rem; font-weight:700; color:#f0f0f0; letter-spacing:-0.02em; line-height:1;">AC</span>
+            <span style="width:1px; height:32px; background:rgba(255,255,255,0.18);"></span>
+            <span style="font-size:0.65rem; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#a8a8a8; line-height:1.4;">Ajyal<br>Collective</span>
+          </div>
+
+          <h1 class="heading-display reveal" style="font-size:clamp(2.5rem,4.5vw,5rem); color:#f0f0f0; margin-bottom:1.5rem; transition-delay:0.05s;">
+            Democratizing<br/>
+            <em style="color:#c8a96e; font-style:italic;">Equity Research</em>
+          </h1>
+
+          <p style="font-size:1rem; color:#9a9a9a; max-width:500px; line-height:1.75; margin-bottom:2.5rem;" class="reveal">
+            Bringing together top minds from leading universities and professional organizations worldwide to deliver high-quality, unbiased equity research — accessible to everyone.
+          </p>
+
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;" class="reveal">
+            <a href="#research" class="btn-primary">View Research</a>
+            <a href="#about" class="btn-outline">Our Mission</a>
+          </div>
+        </div>
+
+        <!-- Right: 3D Financial Globe -->
+        <div class="hero-canvas-wrap reveal">
+          <canvas id="hero-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="margin-top:4rem; padding-top:3rem; border-top:1px solid rgba(255,255,255,0.06); display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:2.5rem;" class="reveal">
+        <div>
+          <div class="stat-number">5</div>
+          <div class="label-caps" style="margin-top:0.4rem;">Sectors Covered</div>
+        </div>
+        <div>
+          <div class="stat-number">35+</div>
+          <div class="label-caps" style="margin-top:0.4rem;">Analysts</div>
+        </div>
+        <div>
+          <div class="stat-number">10+</div>
+          <div class="label-caps" style="margin-top:0.4rem;">Universities</div>
+        </div>
+        <div>
+          <div class="stat-number">0</div>
+          <div class="label-caps" style="margin-top:0.4rem;">Conflicts of Interest</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT / MISSION ═══════════════════════════════════════════════ -->
+  <section id="about" class="section-pad" style="background: linear-gradient(180deg, #0f0f0f 0%, #111111 100%); position:relative; overflow:hidden;">
+    <!-- Watermark logo -->
+    <div style="position:absolute; right:-4rem; top:50%; transform:translateY(-50%); pointer-events:none; z-index:0;">
+      <img src="brand_assets/Ajyal_Collective_Logo_4K.png" alt=""
+        style="width:420px; height:auto; mix-blend-mode:lighten; opacity:0.04; filter:blur(1px);">
+    </div>
+    <div class="container-site" style="position:relative; z-index:1;">
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;" class="about-grid">
+        <!-- Left: copy -->
+        <div class="reveal">
+          <div class="label-caps" style="margin-bottom:1rem;">Who We Are</div>
+          <div class="divider-gold" style="margin-bottom:2rem;"></div>
+
+          <h2 class="heading-serif" style="font-size:clamp(2rem,3.5vw,2.8rem); color:#f0f0f0; margin-bottom:1.5rem; line-height:1.2;">
+            Research that serves<br/>investors, not bankers.
+          </h2>
+
+          <p style="color:#9a9a9a; line-height:1.8; margin-bottom:1.25rem;">
+            Ajyal Collective brings together a diverse group of some of the top minds in leading universities and professional organizations across the world to provide high-quality equity research with unique insights from real industry experts.
+          </p>
+          <p style="color:#9a9a9a; line-height:1.8;">
+            We are a not-for-profit whose main focus is centered around our passion for developing a deep understanding of industries and companies — to provide actionable and valuable insights to the masses, in a straightforward, easy-to-understand way.
+          </p>
+        </div>
+
+        <!-- Right: problem cards -->
+        <div style="display:flex; flex-direction:column; gap:1.25rem;" class="reveal">
+
+          <div class="card-base" style="padding:1.75rem;">
+            <div class="accent-bar"></div>
+            <div class="label-caps" style="margin-bottom:0.6rem;">The Problem</div>
+            <p style="color:#9a9a9a; font-size:0.9rem; line-height:1.7; margin:0;">
+              Investment banks and traditional research institutions are biased in their recommendations — the companies they cover are often also their investment banking clients.
+            </p>
+          </div>
+
+          <div class="card-base" style="padding:1.75rem;">
+            <div class="accent-bar"></div>
+            <div class="label-caps" style="margin-bottom:0.6rem;">The Gap</div>
+            <p style="color:#9a9a9a; font-size:0.9rem; line-height:1.7; margin:0;">
+              Retail investors are often intimidated by financial markets and struggle to navigate the complexities around valuing and investing in public equities.
+            </p>
+          </div>
+
+          <div class="card-base" style="padding:1.75rem;">
+            <div class="accent-bar"></div>
+            <div class="label-caps" style="margin-bottom:0.6rem; color:#c8a96e;">Our Difference</div>
+            <p style="color:#a8a8a8; font-size:0.9rem; line-height:1.7; margin:0;">
+              We provide truly independent, conflict-free research — no banking clients, no hidden agendas. Just rigorous analysis made accessible to everyone.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ SECTORS ════════════════════════════════════════════════════════ -->
+  <section id="sectors" class="section-pad" style="background:#111111; position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,169,110,0.04) 0%, transparent 70%);pointer-events:none;"></div>
+
+    <div class="container-site" style="position:relative;z-index:1;">
+      <div style="text-align:center; margin-bottom:4rem;" class="reveal">
+        <div class="label-caps" style="margin-bottom:1rem;">Coverage Universe</div>
+        <div class="divider-gold" style="margin:0 auto 2rem;"></div>
+        <h2 class="heading-serif" style="font-size:clamp(1.8rem,3vw,2.5rem); color:#f0f0f0;">Five Sector Focus Areas</h2>
+      </div>
+
+      <div class="sectors-grid reveal" id="sectors-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+
+        <div class="card-elevated sector-card sector-photo-card" data-filter="Healthcare" tabindex="0" role="button" aria-pressed="false">
+          <img class="sector-bg" src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/1742902166270-S2Q7A28LAOCJW3WR2RSV/unsplash-image-y5hQCIn1c6o.jpg?format=750w" alt="Healthcare" loading="lazy">
+          <div class="sector-overlay"></div>
+          <div class="sector-content">
+            <div class="label-caps" style="font-size:0.6rem; margin-bottom:0.4rem; color:#c8a96e;">Healthcare</div>
+            <p style="color:#a8a8a8; font-size:0.72rem; margin:0; line-height:1.4;">Pharma, biotech, medtech &amp; health services</p>
+          </div>
+        </div>
+
+        <div class="card-elevated sector-card sector-photo-card" data-filter="TMT" tabindex="0" role="button" aria-pressed="false">
+          <img class="sector-bg" src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/1742902098970-Y7KD5SDDX8W8HFUNRKQ3/unsplash-image-c3ZWXOv1Ndc.jpg?format=750w" alt="TMT" loading="lazy">
+          <div class="sector-overlay"></div>
+          <div class="sector-content">
+            <div class="label-caps" style="font-size:0.6rem; margin-bottom:0.4rem; color:#c8a96e;">TMT</div>
+            <p style="color:#a8a8a8; font-size:0.72rem; margin:0; line-height:1.4;">Technology, media &amp; telecommunications</p>
+          </div>
+        </div>
+
+        <div class="card-elevated sector-card sector-photo-card" data-filter="REGLL" tabindex="0" role="button" aria-pressed="false">
+          <img class="sector-bg" src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/1742902002968-2KZ9UD18JO94QL792DWI/unsplash-image-jj3PpeBIlLA.jpg?format=750w" alt="REGLL" loading="lazy">
+          <div class="sector-overlay"></div>
+          <div class="sector-content">
+            <div class="label-caps" style="font-size:0.6rem; margin-bottom:0.4rem; color:#c8a96e;">REGLL</div>
+            <p style="color:#a8a8a8; font-size:0.72rem; margin:0; line-height:1.4;">Real estate, government, legal, leisure &amp; lifestyle</p>
+          </div>
+        </div>
+
+        <div class="card-elevated sector-card sector-photo-card" data-filter="Consumer" tabindex="0" role="button" aria-pressed="false">
+          <img class="sector-bg" src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/ff614a1f-1faf-4d90-93bf-4781d594d0c0/unsplash-image-5yP83RhaFGA.jpg?format=750w" alt="Consumer" loading="lazy">
+          <div class="sector-overlay"></div>
+          <div class="sector-content">
+            <div class="label-caps" style="font-size:0.6rem; margin-bottom:0.4rem; color:#c8a96e;">Consumer</div>
+            <p style="color:#a8a8a8; font-size:0.72rem; margin:0; line-height:1.4;">Retail, brands, consumer staples &amp; discretionary</p>
+          </div>
+        </div>
+
+        <div class="card-elevated sector-card sector-photo-card" data-filter="Industrials" tabindex="0" role="button" aria-pressed="false">
+          <img class="sector-bg" src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/1742901943053-4X9Q4QQAUPH53THMXHWJ/unsplash-image-6xeDIZgoPaw.jpg?format=750w" alt="Industrials" loading="lazy">
+          <div class="sector-overlay"></div>
+          <div class="sector-content">
+            <div class="label-caps" style="font-size:0.6rem; margin-bottom:0.4rem; color:#c8a96e;">Industrials</div>
+            <p style="color:#a8a8a8; font-size:0.72rem; margin:0; line-height:1.4;">Manufacturing, infrastructure &amp; transportation</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMPANIES WE COVER ══════════════════════════════════════════ -->
+  <section style="background:linear-gradient(180deg,#0f0f0f 0%,#111111 100%); padding:3rem 0; border-top:1px solid rgba(255,255,255,0.04);">
+    <div class="container-site">
+      <div class="label-caps" style="text-align:center; margin-bottom:2.5rem; reveal">Companies We Cover</div>
+      <div class="logo-strip-grid" style="display:grid; grid-template-columns:repeat(8,1fr); gap:1.5rem 1rem; align-items:end; justify-items:center;">
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/ibm.com?size=128" alt="IBM" onerror="logoFallback(this,'ibm.com','IBM')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">IBM</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/lululemon.com?size=128" alt="Lululemon" onerror="logoFallback(this,'lululemon.com','LULU')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">Lululemon</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/asml.com?size=128" alt="ASML" onerror="logoFallback(this,'asml.com','ASML')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">ASML</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/pfizer.com?size=128" alt="Pfizer" onerror="logoFallback(this,'pfizer.com','PFE')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">Pfizer</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/advanceautoparts.com?size=128" alt="Advance Auto Parts" onerror="logoFallback(this,'advanceautoparts.com','AAP')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">Advance Auto</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/saudcement.com?size=128" alt="Saudi Cement" onerror="logoFallback(this,'saudcement.com','SCC')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">Saudi Cement</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/glpropinc.com?size=128" alt="GLPI" onerror="logoFallback(this,'glpropinc.com','GLPI')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">GLPI</span>
+        </div>
+
+        <div class="logo-strip-item" style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:default;">
+          <div class="logo-strip-badge"><img src="https://logo.clearbit.com/viciproperties.com?size=128" alt="VICI Properties" onerror="logoFallback(this,'viciproperties.com','VICI')"></div>
+          <span style="font-size:0.6rem;color:#5a5a5a;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;">VICI Properties</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURED RESEARCH ═════════════════════════════════════════════ -->
+  <section id="research" class="section-pad" style="background: linear-gradient(180deg, #111111 0%, #0f0f0f 100%);">
+    <div class="container-site">
+
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;" class="reveal">
+        <div>
+          <div class="label-caps" style="margin-bottom:1rem;">Latest Reports</div>
+          <div class="divider-gold" style="margin-bottom:2rem;"></div>
+          <h2 class="heading-serif" style="font-size:clamp(1.8rem,3vw,2.5rem); color:#f0f0f0; margin:0;">Featured Research</h2>
+        </div>
+      </div>
+
+      <!-- Active filter indicator -->
+      <div id="filter-bar" style="display:none; align-items:center; gap:0.75rem; margin-bottom:1.75rem; flex-wrap:wrap;">
+        <span class="label-caps" style="font-size:0.6rem;">Showing:</span>
+        <span id="filter-label" style="color:#c8a96e; font-size:0.75rem; font-weight:500;"></span>
+        <button class="btn-filter-reset" onclick="clearSectorFilter()">× Show All</button>
+      </div>
+
+      <div id="research-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem;" class="reveal">
+
+        <!-- IBM -->
+        <a href="https://www.ajyalcollective.com/s/IBM-International-Business-Machines-8_11-RESEARCH.pdf" target="_blank" rel="noopener" class="research-card" data-sector="TMT" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/ibm.com?size=128" alt="IBM" onerror="logoFallback(this,'ibm.com','IBM')"></div>
+            <span class="sector-pill">TMT</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">August 2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">International Business Machines</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NYSE: IBM</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- LULU -->
+        <a href="https://www.ajyalcollective.com/s/Lululemon-ER.pdf" target="_blank" rel="noopener" class="research-card" data-sector="Consumer" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/lululemon.com?size=128" alt="Lululemon" onerror="logoFallback(this,'lululemon.com','LULU')"></div>
+            <span class="sector-pill">Consumer</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">August 2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">Lululemon Athletica</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NASDAQ: LULU</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- Saudi Cement -->
+        <a href="https://www.ajyalcollective.com/s/SCC-Final-d9f8.pdf" target="_blank" rel="noopener" class="research-card" data-sector="Industrials" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/saudcement.com?size=128" alt="Saudi Cement" onerror="logoFallback(this,'saudcement.com','SCC')"></div>
+            <span class="sector-pill">Industrials</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">March 2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">Saudi Cement Company</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">TADAWUL: 3030</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- ASML -->
+        <a href="https://www.ajyalcollective.com/s/AC-ASML-Report-1.pdf" target="_blank" rel="noopener" class="research-card" data-sector="TMT" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/asml.com?size=128" alt="ASML" onerror="logoFallback(this,'asml.com','ASML')"></div>
+            <span class="sector-pill">TMT</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">ASML Holding</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NASDAQ: ASML</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- Advance Auto Parts -->
+        <a href="https://www.ajyalcollective.com/s/Advance-Auto-Parts-NYSEAAP.pdf" target="_blank" rel="noopener" class="research-card" data-sector="Consumer" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/advanceautoparts.com?size=128" alt="Advance Auto Parts" onerror="logoFallback(this,'advanceautoparts.com','AAP')"></div>
+            <span class="sector-pill">Consumer</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">Advance Auto Parts</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NYSE: AAP</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- Pfizer -->
+        <a href="https://www.ajyalcollective.com/s/PFE-Pitch.pdf" target="_blank" rel="noopener" class="research-card" data-sector="Healthcare" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/pfizer.com?size=128" alt="Pfizer" onerror="logoFallback(this,'pfizer.com','PFE')"></div>
+            <span class="sector-pill">Healthcare</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">October 2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">Pfizer Inc.</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NYSE: PFE</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- GLPI -->
+        <a href="https://www.ajyalcollective.com/s/GLPI-Report.pdf" target="_blank" rel="noopener" class="research-card" data-sector="REGLL" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/glpropinc.com?size=128" alt="GLPI" onerror="logoFallback(this,'glpropinc.com','GLPI')"></div>
+            <span class="sector-pill">REGLL</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">Gaming and Leisure Properties</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NASDAQ: GLPI</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+        <!-- VICI -->
+        <a href="https://www.ajyalcollective.com/s/VICI-Report.pdf" target="_blank" rel="noopener" class="research-card" data-sector="REGLL" style="padding:1.75rem; text-decoration:none; display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <div class="company-logo-wrap"><img src="https://logo.clearbit.com/viciproperties.com?size=128" alt="VICI Properties" onerror="logoFallback(this,'viciproperties.com','VICI')"></div>
+            <span class="sector-pill">REGLL</span>
+          </div>
+          <span style="font-size:0.65rem; color:#5a5a5a; display:block; margin-bottom:0.6rem;">2025</span>
+          <h3 class="heading-serif" style="font-size:1.15rem; color:#f0f0f0; margin:0 0 0.4rem; line-height:1.3;">VICI Properties</h3>
+          <p style="font-size:0.72rem; color:#5a5a5a; margin:0 0 1.25rem; letter-spacing:0.04em;">NYSE: VICI</p>
+          <hr class="hr-subtle" style="margin:0 0 1rem;" />
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#c8a96e; font-size:0.72rem; font-weight:500;"><span>↗</span><span>Read full report</span></div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TEAM ═══════════════════════════════════════════════════════════ -->
+  <section id="team" class="section-pad" style="background: linear-gradient(180deg, #141414 0%, #111111 100%); border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="container-site">
+
+      <div style="text-align:center; margin-bottom:4rem;" class="reveal">
+        <div class="label-caps" style="margin-bottom:1rem;">The People</div>
+        <div class="divider-gold" style="margin:0 auto 2rem;"></div>
+        <h2 class="heading-serif" style="font-size:clamp(1.8rem,3vw,2.5rem); color:#f0f0f0; margin-bottom:1rem;">Meet the Team</h2>
+        <p style="color:#7c7c7c; max-width:480px; margin:0 auto; font-size:0.9rem;">Sector leads and analysts from some of the world's top universities, united by a passion for independent research.</p>
+      </div>
+
+      <!-- Sector Leads -->
+      <div style="margin-bottom:4rem;" class="reveal">
+        <div class="label-caps" style="margin-bottom:1.5rem; text-align:center;">Sector Leads</div>
+        <div class="team-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem;">
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/715d512f-84ac-43ad-8758-47a7af2188e8/Screenshot+2025-07-27+at+03.47.10.png?format=400w" alt="Crispin Yoo" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Crispin Yoo</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, TMT</p>
+              <span class="analyst-tag">NYU</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/b50ffaac-d031-4e57-9664-9ece6ee84c44/Screenshot+2025-07-27+at+03.57.00.png?format=400w" alt="Jash Desai" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Jash Desai</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, TMT</p>
+              <span class="analyst-tag">Carnegie Mellon</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/36a9dc97-b246-4535-ae0f-8aa5f1b5b493/Screenshot+2025-07-27+at+03.59.21.png?format=400w" alt="Loc Tran" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Loc Tran</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, Industrials</p>
+              <span class="analyst-tag">Princeton</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/fa915f50-785b-4bd1-9a6f-6f6f89eb3deb/Screenshot+2025-07-27+at+04.00.03.png?format=400w" alt="Hameed Alghaithi" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Hameed Alghaithi</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, Consumer</p>
+              <span class="analyst-tag">UC Berkeley</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/f195c4f4-abdf-442d-beb2-ad724aded783/Screenshot+2025-07-27+at+04.00.41.png?format=400w" alt="Ridhi Machireddy" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Ridhi Machireddy</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, Consumer</p>
+              <span class="analyst-tag">Boston College</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/03f0a039-18ba-4a7c-9418-bed50aa4eb31/Screenshot+2025-07-27+at+04.01.49.png?format=400w" alt="Yashasvi Desai" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Yashasvi Desai</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, REGLL</p>
+              <span class="analyst-tag">Emory</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/f3089e30-650a-4ea2-94ef-2309789a16da/T093HB805TR-U095R6Z7RQT-fe8445f333f8-512.jpeg?format=400w" alt="Maansi Prasad" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Maansi Prasad</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, REGLL</p>
+              <span class="analyst-tag">UT Austin</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/56e73c99-f9c2-4c29-8028-d9f545e8218b/Screenshot+2025-07-27+at+04.02.36.png?format=400w" alt="Shane Patel" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Shane Patel</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, Healthcare</p>
+              <span class="analyst-tag">NYU</span>
+            </div>
+          </div>
+
+          <div class="team-card lead-card">
+            <div class="lead-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/b0f5b675-3842-4569-b57a-5de144968e37/Screenshot+2025-07-27+at+04.03.32.png?format=400w" alt="Iris Zhang" loading="lazy"></div>
+            <div class="lead-info">
+              <p style="color:#f0f0f0; font-size:0.9rem; font-weight:500; margin:0 0 0.2rem;">Iris Zhang</p>
+              <p style="color:#7c7c7c; font-size:0.72rem; margin:0 0 0.6rem;">Sector Lead, Healthcare</p>
+              <span class="analyst-tag">UC Berkeley</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Analysts -->
+      <div class="reveal">
+        <div class="label-caps" style="margin-bottom:1.5rem; text-align:center;">Analysts</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:0.75rem; max-width:1100px; margin:0 auto;" class="analysts-grid">
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/34bbc445-2c7e-40bc-a2ea-5c348954313e/Screenshot+2025-07-27+at+02.50.38.png?format=200w" alt="Aiden Mertzel" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Aiden Mertzel</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">UC Berkeley</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/71799559-3bc1-41ac-b501-8cb21aa9f705/Screenshot+2025-07-27+at+02.55.51.png?format=200w" alt="Aryan Khanna" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Aryan Khanna</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">UNC Chapel Hill</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/7bbee6c0-2af8-44e0-b200-7b7fc0796037/Screenshot+2025-07-27+at+02.56.40.png?format=200w" alt="Satvik Subbaraj" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Satvik Subbaraj</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Rutgers</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/6c03f1c0-9912-4e40-a9dd-da604fc731dc/Screenshot+2025-07-27+at+02.58.08.png?format=200w" alt="Kaushik Padmanabhan" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Kaushik Padmanabhan</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Indiana</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/77e3716a-2386-4088-9ca8-3f6a54238896/Screenshot+2025-07-27+at+02.59.16.png?format=200w" alt="Ahmed Ibrahim Abd-Elazem" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Ahmed Ibrahim</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">NYU</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/a6589494-50fe-47ca-9efe-7d23bc6bafbf/Screenshot+2025-07-27+at+03.00.04.png?format=200w" alt="Paree Mehta" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Paree Mehta</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Rutgers</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/431be72c-0d97-45f7-b804-8831f6d41c27/Screenshot+2025-07-27+at+03.01.16.png?format=200w" alt="Kevin Garcia" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Kevin Garcia</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">U Maryland</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/5ec321c2af33de48734cc929/1615224238156-OY2QGA6E03LY3JALP4NL/Rectangle+16.jpg?format=200w" alt="Judy Li" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Judy Li</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">UC Santa Barbara</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/8f13149c-8e42-48a4-aae1-7519c61cbf37/Screenshot+2025-07-27+at+03.05.17.png?format=200w" alt="Ethan Truong" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Ethan Truong</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Chapman</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/5ec321c2af33de48734cc929/1615224412523-SZYXMKS44H8QE5OK3RZP/Rectangle+17.jpg?format=200w" alt="Nihal Mareedu" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Nihal Mareedu</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">UC Berkeley</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/2b380d08-e943-4095-bac5-ff84b5be11bc/Screenshot+2025-07-27+at+03.06.28.png?format=200w" alt="Maj Globocnik" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Maj Globocnik</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Indiana</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/59f84415-7c32-4551-9861-681d85967f53/Screenshot+2025-07-27+at+03.07.08.png?format=200w" alt="Armaan Karnad" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Armaan Karnad</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Fordham</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/5dbf274f-7bdc-4bdc-82c2-9e1185371989/Screenshot+2025-07-27+at+03.27.31.png?format=200w" alt="Jake Morrison" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Jake Morrison</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">&nbsp;</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/410b52f6-085f-4b46-a61b-fcfbcadd1101/Screenshot+2025-07-27+at+03.09.56.png?format=200w" alt="Russell Garcia" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Russell Garcia</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Ohio State</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/d5a5f19c-48fa-40b4-880d-e715e0f81719/Screenshot+2025-07-27+at+03.11.22.png?format=200w" alt="Anish Sambrani" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Anish Sambrani</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">U Georgia</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/14f76f75-10c2-47c3-98c4-23ec62008c5e/Screenshot+2025-07-27+at+03.12.12.png?format=200w" alt="Lucas Tsuchida" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Lucas Tsuchida</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">McGill</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/ba741bc4-a9e1-4589-b54b-c7574ad8ad28/Screenshot+2025-07-27+at+03.13.26.png?format=200w" alt="Kashyap Kannajyosula" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Kashyap Kannajyosula</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">UNC</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/8082d28b-3f45-4b9b-a1d0-5c6e095f4908/Screenshot+2025-07-27+at+03.21.12.png?format=200w" alt="Wilson Zhang" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Wilson Zhang</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">CUNY Baruch</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/c549e564-4f3d-44fc-9f45-f712588492eb/Screenshot+2025-07-27+at+03.35.26.png?format=200w" alt="Tanisha Patel" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Tanisha Patel</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Northeastern</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/bc4f8e5b-192a-47a8-a2f0-596917eb704f/Screenshot+2025-07-27+at+03.24.46.png?format=200w" alt="Jason Mok" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Jason Mok</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Carnegie Mellon</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/004f99a6-807f-4238-a731-51ea20efc25c/Screenshot+2025-07-27+at+03.32.31.png?format=200w" alt="Emma Toh Lin Xuan" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Emma Toh Lin Xuan</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">USC</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/3a0151cf-02b3-43c5-9541-002556fabd03/Screenshot+2025-07-27+at+03.41.52.png?format=200w" alt="Matthew Elias" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Matthew Elias</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Florida State</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/c2d91e8d-85bc-405d-b473-2f020f99fa2f/Screenshot+2025-07-27+at+03.43.28.png?format=200w" alt="Kennedye JeanPierre-Towa" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Kennedye JeanPierre-Towa</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Boston University</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/95f5dc7c-7fc8-483e-9c6d-63c721b4fc42/Screenshot+2025-07-27+at+03.44.25.png?format=200w" alt="Zach DiGirolamo" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Zach DiGirolamo</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">Cornell</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo"><img src="https://images.squarespace-cdn.com/content/v1/67b611a47ed3b15dd5e0871d/8be5fadc-5335-44f7-bcdf-b3e0b2d67e1d/Screenshot+2025-07-27+at+03.45.34.png?format=200w" alt="Tanner Avila" loading="lazy"></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Tanner Avila</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">U Oregon</p></div></div>
+
+          <div class="analyst-card"><div class="analyst-photo" style="background:rgba(38,38,38,0.8);display:flex;align-items:center;justify-content:center;"><span style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#5a5a5a;">LY</span></div><div class="analyst-info"><p style="color:#d4d4d4;font-size:0.72rem;font-weight:500;margin:0 0 0.15rem;line-height:1.3;">Ling Ying Yang</p><p style="color:#5a5a5a;font-size:0.62rem;margin:0;">NYU</p></div></div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ CTA BAND ════════════════════════════════════════════════════════ -->
+  <section class="section-pad-sm" style="background: linear-gradient(135deg, #141414 0%, #0f0f0f 100%); border-top:1px solid rgba(200,169,110,0.1); border-bottom:1px solid rgba(200,169,110,0.1);">
+    <div class="container-site" style="text-align:center;" class="reveal">
+      <div style="margin-bottom:2rem; display:flex; justify-content:center;">
+        <img src="brand_assets/Ajyal_Collective_Logo_4K.png" alt="Ajyal Collective"
+          style="height:56px; width:auto; mix-blend-mode:lighten; opacity:0.82; filter:brightness(0.95);">
+      </div>
+      <div class="label-caps" style="margin-bottom:1.5rem;">Independent. Rigorous. Accessible.</div>
+      <h2 class="heading-display" style="font-size:clamp(2rem,4vw,3.5rem); color:#f0f0f0; margin-bottom:1.5rem;">
+        Research for the<br/><em style="color:#c8a96e;">next generation</em> of investors.
+      </h2>
+      <p style="color:#7c7c7c; max-width:460px; margin:0 auto 2.5rem; font-size:0.9rem; line-height:1.75;">
+        Access our growing library of equity research reports — free, unbiased, and written by real industry experts.
+      </p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="#research" class="btn-primary">Browse All Reports</a>
+        <a href="https://www.linkedin.com/company/ajyal-collective" target="_blank" rel="noopener" class="btn-outline">Connect on LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═════════════════════════════════════════════════════════ -->
+  <footer style="background:#080808; border-top:1px solid rgba(255,255,255,0.04); padding:3rem 0;">
+    <div class="container-site" style="display:flex; flex-direction:column; align-items:center; gap:1.5rem; text-align:center;">
+      <img src="brand_assets/Ajyal_Collective_Logo_4K.png" alt="Ajyal Collective"
+        style="height:64px; width:auto; mix-blend-mode:lighten; opacity:0.75; filter:brightness(0.9);">
+
+      <div style="display:flex; gap:2rem; flex-wrap:wrap; justify-content:center;">
+        <a href="#sectors" class="nav-link" style="text-decoration:none; font-size:0.65rem;">Sectors</a>
+        <a href="#research" class="nav-link" style="text-decoration:none; font-size:0.65rem;">Research</a>
+        <a href="#about" class="nav-link" style="text-decoration:none; font-size:0.65rem;">About</a>
+        <a href="#team" class="nav-link" style="text-decoration:none; font-size:0.65rem;">Team</a>
+        <a href="https://www.linkedin.com/company/ajyal-collective" target="_blank" rel="noopener" class="nav-link" style="text-decoration:none; font-size:0.65rem;">LinkedIn</a>
+      </div>
+      <p style="color:#383838; font-size:0.7rem; margin:0;">© 2025 Ajyal Collective · Not-for-Profit</p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal — progressive enhancement
+    document.documentElement.classList.add('js-loaded');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.04}s`;
+      observer.observe(el);
+    });
+
+    // Sector filtering
+    let activeSector = null;
+
+    function clearSectorFilter() {
+      activeSector = null;
+      document.querySelectorAll('.sector-card').forEach(c => {
+        c.classList.remove('active');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      document.querySelectorAll('.research-card').forEach(c => c.classList.remove('filtered-out'));
+      document.getElementById('filter-bar').style.display = 'none';
+      document.getElementById('research').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.sector-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const sector = card.dataset.filter;
+        if (activeSector === sector) { clearSectorFilter(); return; }
+        activeSector = sector;
+        document.querySelectorAll('.sector-card').forEach(c => {
+          c.classList.toggle('active', c.dataset.filter === sector);
+          c.setAttribute('aria-pressed', c.dataset.filter === sector ? 'true' : 'false');
+        });
+        document.querySelectorAll('.research-card').forEach(c => {
+          c.classList.toggle('filtered-out', c.dataset.sector !== sector);
+        });
+        const bar = document.getElementById('filter-bar');
+        bar.style.display = 'flex';
+        document.getElementById('filter-label').textContent = sector;
+        document.getElementById('research').scrollIntoView({ behavior: 'smooth' });
+      });
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); } });
+    });
+
+    // Active nav indicator on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) current = s.id;
+      });
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + current ? '#c8a96e' : '';
+      });
+    }, { passive: true });
+
+    // ── Logo fallback (Clearbit → Google Favicons → initials) ─────────────
+    function logoFallback(img, domain, text) {
+      img.onerror = null;
+      const gSrc = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=128';
+      img.onerror = function() {
+        img.onerror = null;
+        img.parentElement.outerHTML = '<div class="' +
+          img.parentElement.className.replace('company-logo-wrap','company-logo-initials').replace('logo-strip-badge','logo-strip-initials') +
+          '">' + text + '</div>';
+      };
+      img.src = gSrc;
+    }
+
+    // ── 3D Financial Globe ────────────────────────────────────────────────
+    (function() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, R, cx, cy;
+      let rotX = 0.18, rotY = 0;
+      let isDragging = false, lastMX = 0, lastMY = 0;
+      let velX = 0, velY = 0;
+      const AUTO_SPEED = 0.0045;
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        W = rect.width; H = rect.height;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+        R = Math.min(W, H) * 0.4;
+        cx = W / 2; cy = H / 2;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Named company nodes on the globe surface
+      const companies = [
+        { lat: 0.45, lon: 0.3,  label: 'IBM'  },
+        { lat: -0.3, lon: 1.2,  label: 'LULU' },
+        { lat: 0.75, lon: 2.4,  label: 'ASML' },
+        { lat: -0.5, lon: -0.9, label: 'PFE'  },
+        { lat: 0.2,  lon: -1.6, label: 'SCC'  },
+        { lat: -0.6, lon: 2.1,  label: 'AAP'  },
+        { lat: 0.6,  lon: -2.4, label: 'GLPI' },
+        { lat: -0.15,lon: 0.9,  label: 'VICI' },
+      ];
+
+      // Extra decorative dots
+      const dots = Array.from({ length: 22 }, () => ({
+        lat: (Math.random() - 0.5) * Math.PI,
+        lon: Math.random() * Math.PI * 2,
+        label: null
+      }));
+
+      const allNodes = [...companies, ...dots];
+
+      function project(lat, lon) {
+        let x = Math.cos(lat) * Math.cos(lon);
+        let y = Math.sin(lat);
+        let z = Math.cos(lat) * Math.sin(lon);
+        // Rotate Y
+        const x1 = x * Math.cos(rotY) + z * Math.sin(rotY);
+        const z1 = -x * Math.sin(rotY) + z * Math.cos(rotY);
+        // Rotate X
+        const y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+        const z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
+        return { sx: cx + x1 * R, sy: cy - y2 * R, z: z2 };
+      }
+
+      function drawArc(latFn, lonFn, steps, baseAlpha) {
+        ctx.beginPath();
+        let moved = false;
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          const p = project(latFn(t), lonFn(t));
+          const a = p.z > 0 ? baseAlpha : baseAlpha * 0.28;
+          ctx.strokeStyle = `rgba(200,169,110,${a})`;
+          if (!moved) { ctx.moveTo(p.sx, p.sy); moved = true; }
+          else ctx.lineTo(p.sx, p.sy);
+        }
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Atmospheric glow
+        const atmo = ctx.createRadialGradient(cx, cy, R * 0.7, cx, cy, R * 1.4);
+        atmo.addColorStop(0, 'rgba(200,169,110,0.06)');
+        atmo.addColorStop(0.6, 'rgba(200,169,110,0.02)');
+        atmo.addColorStop(1, 'rgba(200,169,110,0)');
+        ctx.fillStyle = atmo;
+        ctx.beginPath(); ctx.arc(cx, cy, R * 1.4, 0, Math.PI * 2); ctx.fill();
+
+        // Sphere tint
+        const sph = ctx.createRadialGradient(cx - R * 0.25, cy - R * 0.25, 0, cx, cy, R);
+        sph.addColorStop(0, 'rgba(200,169,110,0.04)');
+        sph.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = sph;
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
+
+        // Latitude lines
+        const latLines = 9;
+        for (let i = 0; i < latLines; i++) {
+          const lat = (i / (latLines - 1)) * Math.PI - Math.PI / 2;
+          drawArc(() => lat, t => t * Math.PI * 2, 80, 0.14);
+        }
+
+        // Longitude lines
+        const lonLines = 12;
+        for (let i = 0; i < lonLines; i++) {
+          const lon = (i / lonLines) * Math.PI * 2;
+          drawArc(t => t * Math.PI - Math.PI / 2, () => lon, 80, 0.11);
+        }
+
+        // Equator highlight
+        ctx.beginPath();
+        let eqMoved = false;
+        for (let i = 0; i <= 120; i++) {
+          const lon = (i / 120) * Math.PI * 2;
+          const p = project(0, lon);
+          if (p.z > 0) {
+            if (!eqMoved) { ctx.moveTo(p.sx, p.sy); eqMoved = true; }
+            else ctx.lineTo(p.sx, p.sy);
+          } else { ctx.stroke(); ctx.beginPath(); eqMoved = false; }
+        }
+        ctx.strokeStyle = 'rgba(200,169,110,0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Project all nodes
+        const projected = allNodes.map(n => ({ ...n, ...project(n.lat, n.lon) }))
+          .sort((a, b) => a.z - b.z);
+
+        // Connection lines between company nodes
+        const namedProj = projected.filter(n => n.label);
+        for (let i = 0; i < namedProj.length; i++) {
+          for (let j = i + 1; j < namedProj.length; j++) {
+            const a = namedProj[i], b = namedProj[j];
+            const dist = Math.hypot(a.sx - b.sx, a.sy - b.sy);
+            if (dist < R * 1.05 && a.z > -0.15 && b.z > -0.15) {
+              const alpha = (1 - dist / (R * 1.05)) * 0.28 * Math.min(a.z + 1, 1) * Math.min(b.z + 1, 1);
+              ctx.beginPath();
+              ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy);
+              ctx.strokeStyle = `rgba(200,169,110,${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw nodes
+        projected.forEach(n => {
+          if (n.z < -0.45) return;
+          const alpha = Math.min(1, (n.z + 0.45) / 1.1);
+          const isNamed = !!n.label;
+          const size = isNamed ? 4 : 2;
+
+          if (isNamed) {
+            const glow = ctx.createRadialGradient(n.sx, n.sy, 0, n.sx, n.sy, 16);
+            glow.addColorStop(0, `rgba(200,169,110,${alpha * 0.45})`);
+            glow.addColorStop(1, 'rgba(200,169,110,0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath(); ctx.arc(n.sx, n.sy, 16, 0, Math.PI * 2); ctx.fill();
+          }
+
+          ctx.fillStyle = `rgba(200,169,110,${alpha * (isNamed ? 1 : 0.45)})`;
+          ctx.beginPath(); ctx.arc(n.sx, n.sy, size, 0, Math.PI * 2); ctx.fill();
+
+          if (isNamed && n.z > 0.08) {
+            ctx.fillStyle = `rgba(224,200,155,${alpha * 0.92})`;
+            ctx.font = '600 9px Inter, sans-serif';
+            ctx.fillText(n.label, n.sx + 6, n.sy - 2);
+          }
+        });
+      }
+
+      function animate() {
+        if (!isDragging) {
+          rotY += AUTO_SPEED;
+          velX *= 0.94; velY *= 0.94;
+        } else {
+          rotY += velY; rotX += velX;
+          rotX = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, rotX));
+        }
+        draw();
+        requestAnimationFrame(animate);
+      }
+
+      canvas.addEventListener('mousedown', e => {
+        isDragging = true; lastMX = e.clientX; lastMY = e.clientY;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        velY = (e.clientX - lastMX) * 0.006;
+        velX = (e.clientY - lastMY) * 0.006;
+        rotY += velY; rotX += velX;
+        rotX = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, rotX));
+        lastMX = e.clientX; lastMY = e.clientY;
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      canvas.addEventListener('touchstart', e => {
+        isDragging = true;
+        lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY;
+      }, { passive: true });
+      canvas.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        velY = (e.touches[0].clientX - lastMX) * 0.006;
+        velX = (e.touches[0].clientY - lastMY) * 0.006;
+        rotY += velY; rotX += velX;
+        rotX = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, rotX));
+        lastMX = e.touches[0].clientX; lastMY = e.touches[0].clientY;
+      }, { passive: true });
+      canvas.addEventListener('touchend', () => { isDragging = false; });
+
+      animate();
+    })();
+
+    // ── AI Chatbot ────────────────────────────────────────────────────────
+    // Chatbot HTML is below this script block — wait for full DOM parse
+    document.addEventListener('DOMContentLoaded', function() {
+      const kb = [
+        // ── Specific people / team ──
+        { p: ['analyst','analysts','who are the analysts','list of analysts','name the analysts','all members','the members','the students'], a: 'Ajyal Collective has 26 analysts from top universities:\n\nAiden Mertzel (UC Berkeley) · Aryan Khanna (UNC) · Satvik Subbaraj (Rutgers) · Kaushik Padmanabhan (Indiana) · Ahmed Ibrahim (NYU) · Paree Mehta (Rutgers) · Kevin Garcia (U Maryland) · Judy Li (UC Santa Barbara) · Ethan Truong (Chapman) · Nihal Mareedu (UC Berkeley) · Maj Globocnik (Indiana) · Armaan Karnad (Fordham) · Jake Morrison · Russell Garcia (Ohio State) · Anish Sambrani (U Georgia) · Lucas Tsuchida (McGill) · Kashyap Kannajyosula (UNC) · Wilson Zhang (CUNY Baruch) · Tanisha Patel (Northeastern) · Jason Mok (Carnegie Mellon) · Emma Toh Lin Xuan (USC) · Matthew Elias (Florida State) · Kennedye JeanPierre-Towa (Boston University) · Zach DiGirolamo (Cornell) · Tanner Avila (U Oregon) · Ling Ying Yang (NYU)' },
+        { p: ['sector lead','sector leads','who leads','leadership','lead'], a: 'Our 9 Sector Leads are:\n\n• TMT: Crispin Yoo (NYU), Jash Desai (Carnegie Mellon)\n• Industrials: Loc Tran (Princeton)\n• Consumer: Hameed Alghaithi (UC Berkeley), Ridhi Machireddy (Boston College)\n• REGLL: Yashasvi Desai (Emory), Maansi Prasad (UT Austin)\n• Healthcare: Shane Patel (NYU), Iris Zhang (UC Berkeley)' },
+        { p: ['team','members','staff','who works','people','contributors'], a: 'Ajyal Collective has 9 Sector Leads and 26 Analysts from 10+ universities — NYU, Carnegie Mellon, Princeton, UC Berkeley, Boston College, Emory, UT Austin, Cornell, USC, Rutgers, McGill, and more. Everyone contributes voluntarily.' },
+        // ── Specific companies ──
+        { p: ['ibm','international business machines'], a: 'IBM (NYSE: IBM) is covered in our TMT sector. Download the free equity research report from the Research section.' },
+        { p: ['lululemon','lulu'], a: 'Lululemon Athletica (NASDAQ: LULU) is covered in our Consumer sector. Free report in the Research section.' },
+        { p: ['pfizer','pfe'], a: 'Pfizer Inc. (NYSE: PFE) is covered in our Healthcare sector. Free report in the Research section.' },
+        { p: ['asml'], a: 'ASML Holding (NASDAQ: ASML) is covered in our TMT sector. Free report in the Research section.' },
+        { p: ['advance auto','aap'], a: 'Advance Auto Parts (NYSE: AAP) is covered in our Consumer sector. Free report in the Research section.' },
+        { p: ['saudi cement','scc','3030'], a: 'Saudi Cement Company (TADAWUL: 3030) is covered in our Industrials sector. Free report in the Research section.' },
+        { p: ['glpi','gaming and leisure','gaming & leisure'], a: 'Gaming & Leisure Properties (NASDAQ: GLPI) is covered in our REGLL sector. Free report in the Research section.' },
+        { p: ['vici'], a: 'VICI Properties (NYSE: VICI) is covered in our REGLL sector. Free report in the Research section.' },
+        // ── Sectors ──
+        { p: ['tmt','technology','tech sector','media sector','telecom'], a: 'Our TMT sector covers Technology, Media & Telecommunications. Sector Leads: Crispin Yoo (NYU) and Jash Desai (Carnegie Mellon). Reports: IBM, ASML.' },
+        { p: ['healthcare','pharma','biotech','health sector'], a: 'Our Healthcare sector covers Pharma, Biotech & Medtech. Sector Leads: Shane Patel (NYU) and Iris Zhang (UC Berkeley). Reports: Pfizer.' },
+        { p: ['consumer sector','retail sector','consumer goods'], a: 'Our Consumer sector covers Retail, Brands & Consumer Staples/Discretionary. Sector Leads: Hameed Alghaithi (UC Berkeley) and Ridhi Machireddy (Boston College). Reports: Lululemon, Advance Auto Parts.' },
+        { p: ['industrial','industrials','manufacturing'], a: 'Our Industrials sector covers Manufacturing, Infrastructure & Transportation. Sector Lead: Loc Tran (Princeton). Reports: Saudi Cement Company.' },
+        { p: ['regll','real estate','government sector','leisure'], a: 'Our REGLL sector covers Real Estate, Government, Legal, Leisure & Lifestyle. Sector Leads: Yashasvi Desai (Emory) and Maansi Prasad (UT Austin). Reports: GLPI, VICI Properties.' },
+        { p: ['sector','sectors','coverage','industries','cover'], a: 'We cover five sectors:\n• TMT – Technology, Media & Telecom\n• Healthcare – Pharma, Biotech, Medtech\n• Consumer – Retail, Brands, Staples\n• Industrials – Manufacturing, Infrastructure\n• REGLL – Real Estate, Government, Legal, Leisure & Lifestyle' },
+        // ── Reports / research ──
+        { p: ['report','reports','pdf','download','all reports','list of reports'], a: 'We have 8 free equity research reports:\n• IBM (TMT)\n• Lululemon (Consumer)\n• Saudi Cement (Industrials)\n• ASML (TMT)\n• Advance Auto Parts (Consumer)\n• Pfizer (Healthcare)\n• Gaming & Leisure Properties (REGLL)\n• VICI Properties (REGLL)\n\nScroll to the Research section and click any card to open the PDF.' },
+        { p: ['research','analysis','equity','stock'], a: 'All our equity research is free and independent. We publish in-depth reports on publicly listed companies across 5 sectors. Scroll to the Research section to browse them.' },
+        // ── Mission / values ──
+        { p: ['mission','goal','purpose','objective','why'], a: 'Our mission is to democratize equity research — making rigorous, independent analysis accessible to everyone, not just institutional investors. No banking clients, no hidden agendas.' },
+        { p: ['not-for-profit','nonprofit','non profit'], a: 'Ajyal Collective is a not-for-profit organization. We don\'t charge for our research, don\'t trade securities, and receive no compensation from the companies we cover.' },
+        { p: ['free','cost','price','how much','pay','subscription'], a: 'Everything is completely free. No subscriptions, no paywalls, no account needed. All reports are openly downloadable PDFs.' },
+        { p: ['independent','unbiased','bias','conflict','conflict of interest'], a: 'We have zero conflicts of interest. Unlike investment banks, we have no banking clients. Our research is 100% independent — just rigorous analysis driven by passion for markets.' },
+        // ── Contact / joining ──
+        { p: ['contact','reach','email','linkedin','connect','find'], a: 'Connect with us on LinkedIn: linkedin.com/company/ajyal-collective. That\'s the best way to reach us or ask about collaboration.' },
+        { p: ['join','apply','become','member','volunteer','intern'], a: 'Interested in joining? Reach out on LinkedIn at linkedin.com/company/ajyal-collective. We welcome students and professionals passionate about equity research.' },
+        // ── Universities ──
+        { p: ['university','universities','school','schools','college','student'], a: 'Ajyal Collective draws talent from 10+ leading universities: NYU, Carnegie Mellon, Princeton, UC Berkeley, Boston College, Emory, UT Austin, Cornell, USC, Rutgers, McGill, Ohio State, Florida State, and more.' },
+        // ── Generic about — LAST so specific questions match first ──
+        { p: ['what is ajyal','who are you','about ajyal','what do you do','tell me about ajyal'], a: 'Ajyal Collective is a not-for-profit equity research organization. We bring together top analysts from leading universities worldwide to deliver high-quality, unbiased equity research — free and accessible to everyone.' },
+        { p: ['hello','hi','hey','greetings','good morning','good afternoon'], a: 'Hello! I\'m the Ajyal Collective assistant. Ask me about our research reports, team, sectors, or mission — I\'m happy to help!' },
+      ];
+
+      function findAnswer(q) {
+        const lower = q.toLowerCase();
+        for (const item of kb) {
+          if (item.p.some(p => lower.includes(p))) return item.a;
+        }
+        return "I don't have a specific answer for that, but you can explore the Research, Team, and About sections on this page. You can also reach us on LinkedIn at linkedin.com/company/ajyal-collective!";
+      }
+
+      const btn = document.getElementById('chat-toggle-btn');
+      const panel = document.getElementById('chat-panel');
+      const closeBtn = document.getElementById('chat-close-btn');
+      const input = document.getElementById('chat-input');
+      const sendBtn = document.getElementById('chat-send-btn');
+      const msgs = document.getElementById('chat-messages');
+
+      btn.addEventListener('click', () => {
+        panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', panel.classList.contains('open') ? 'true' : 'false');
+        if (panel.classList.contains('open')) input.focus();
+      });
+      closeBtn.addEventListener('click', () => {
+        panel.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+
+      function addMsg(text, isUser) {
+        const d = document.createElement('div');
+        d.style.cssText = isUser
+          ? 'align-self:flex-end;background:rgba(200,169,110,0.11);border:1px solid rgba(200,169,110,0.22);color:#dfc49a;border-radius:10px 10px 3px 10px;padding:.65rem .9rem;font-size:.81rem;max-width:80%;line-height:1.55;white-space:pre-line;'
+          : 'align-self:flex-start;background:rgba(36,36,36,0.9);border:1px solid rgba(255,255,255,0.07);color:#d4d4d4;border-radius:10px 10px 10px 3px;padding:.65rem .9rem;font-size:.81rem;max-width:86%;line-height:1.55;white-space:pre-line;';
+        d.textContent = text;
+        msgs.appendChild(d);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function showTyping() {
+        const d = document.createElement('div');
+        d.id = 'typing-ind';
+        d.style.cssText = 'align-self:flex-start;display:flex;gap:4px;align-items:center;padding:.6rem .9rem;';
+        d.innerHTML = '<span style="width:6px;height:6px;background:#c8a96e;border-radius:50%;animation:typing-dot 1.1s ease-in-out infinite;"></span><span style="width:6px;height:6px;background:#c8a96e;border-radius:50%;animation:typing-dot 1.1s ease-in-out .2s infinite;"></span><span style="width:6px;height:6px;background:#c8a96e;border-radius:50%;animation:typing-dot 1.1s ease-in-out .4s infinite;"></span>';
+        msgs.appendChild(d);
+        msgs.scrollTop = msgs.scrollHeight;
+        return d;
+      }
+
+      function handleSend() {
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        addMsg(text, true);
+        const typing = showTyping();
+        setTimeout(() => {
+          typing.remove();
+          addMsg(findAnswer(text), false);
+        }, 600 + Math.random() * 600);
+      }
+
+      sendBtn.addEventListener('click', handleSend);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+    });
+  </script>
+
+  <!-- ═══ AI CHATBOT ════════════════════════════════════════════════════ -->
+  <style>
+    @keyframes typing-dot {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+    #chat-panel {
+      position: fixed;
+      bottom: 86px;
+      right: 1.5rem;
+      width: 340px;
+      height: 460px;
+      background: linear-gradient(160deg, rgba(22,22,22,0.99) 0%, rgba(14,14,14,0.99) 100%);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 14px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 72px rgba(0,0,0,0.65), 0 0 0 1px rgba(200,169,110,0.06);
+      transform: translateY(16px) scale(0.97);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+    }
+    #chat-panel.open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+    #chat-toggle-btn {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 54px;
+      height: 54px;
+      background: #c8a96e;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      box-shadow: 0 4px 24px rgba(200,169,110,0.45), 0 2px 8px rgba(0,0,0,0.35);
+      transition: background 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+    }
+    #chat-toggle-btn:hover {
+      background: #dfc49a;
+      transform: scale(1.1);
+      box-shadow: 0 8px 36px rgba(200,169,110,0.55), 0 2px 8px rgba(0,0,0,0.3);
+    }
+    #chat-toggle-btn:active { transform: scale(0.95); }
+    #chat-toggle-btn:focus-visible { outline: 2px solid #c8a96e; outline-offset: 3px; }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      scroll-behavior: smooth;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-track { background: transparent; }
+    #chat-messages::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.18); border-radius: 2px; }
+    @media (max-width: 480px) {
+      #chat-panel { width: calc(100vw - 2rem); right: 1rem; }
+      #chat-toggle-btn { right: 1rem; }
+    }
+  </style>
+
+  <button id="chat-toggle-btn" aria-label="Open Ajyal Assistant chat" aria-expanded="false" aria-controls="chat-panel">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#080808"/>
+    </svg>
+  </button>
+
+  <div id="chat-panel" role="dialog" aria-label="Ajyal Collective Assistant">
+    <!-- Panel header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <div style="width:34px;height:34px;background:rgba(200,169,110,0.1);border:1px solid rgba(200,169,110,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:#c8a96e;flex-shrink:0;">AC</div>
+        <div>
+          <p style="color:#f0f0f0;font-size:0.83rem;font-weight:500;margin:0;line-height:1.2;">Ajyal Assistant</p>
+          <p style="color:#5a5a5a;font-size:0.64rem;margin:0;display:flex;align-items:center;gap:0.3rem;"><span style="width:5px;height:5px;background:#4ade80;border-radius:50%;display:inline-block;flex-shrink:0;"></span> Online</p>
+        </div>
+      </div>
+      <button id="chat-close-btn" style="background:none;border:none;color:#5a5a5a;cursor:pointer;padding:0.3rem;font-size:1rem;line-height:1;border-radius:4px;transition:color 0.2s ease,background 0.2s ease;" aria-label="Close chat"
+        onmouseover="this.style.color='#d4d4d4';this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.color='#5a5a5a';this.style.background='transparent'">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-messages">
+      <div style="align-self:flex-start;background:rgba(36,36,36,0.9);border:1px solid rgba(255,255,255,0.07);color:#d4d4d4;border-radius:10px 10px 10px 3px;padding:0.7rem 0.95rem;font-size:0.81rem;max-width:86%;line-height:1.55;">
+        Hi! I'm Ajyal Collective's assistant. Ask me anything about our mission, sectors, research reports, or team! 👋
+      </div>
+    </div>
+
+    <!-- Input row -->
+    <div style="padding:0.75rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:0.5rem;flex-shrink:0;">
+      <input id="chat-input" type="text" placeholder="Ask a question…" autocomplete="off"
+        style="flex:1;background:rgba(28,28,28,0.9);border:1px solid rgba(255,255,255,0.09);border-radius:8px;padding:0.6rem 0.85rem;color:#d4d4d4;font-size:0.8rem;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s ease;"
+        onfocus="this.style.borderColor='rgba(200,169,110,0.4)'"
+        onblur="this.style.borderColor='rgba(255,255,255,0.09)'" />
+      <button id="chat-send-btn"
+        style="background:#c8a96e;border:none;border-radius:8px;padding:0.6rem 0.9rem;color:#080808;font-size:0.85rem;font-weight:700;cursor:pointer;transition:background 0.2s ease,transform 0.15s ease;flex-shrink:0;"
+        onmouseover="this.style.background='#dfc49a'" onmouseout="this.style.background='#c8a96e'"
+        onmousedown="this.style.transform='scale(0.94)'" onmouseup="this.style.transform='scale(1)'"
+        aria-label="Send message">↑</button>
+    </div>
+  </div>
+
+  <style>
+    /* Sectors grid */
+    .sectors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .sector-card { padding: 2rem 1.5rem; }
+
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+      .hero-canvas-wrap { order: -1; }
+      #hero-canvas { max-width: 280px !important; }
+      .logo-strip-grid { grid-template-columns: repeat(4,1fr) !important; }
+      .logo-strip-badge { width: 80px !important; height: 52px !important; }
+      .logo-strip-badge img { max-height: 28px !important; max-width: 60px !important; }
+      .about-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+      .hidden-mobile { display: none !important; }
+
+      /* 2-column sector cards on mobile */
+      .sectors-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .sector-card { padding: 1.25rem 1rem !important; }
+      .sector-card div[style*="font-size:1.75rem"] { font-size: 1.25rem !important; margin-bottom: 0.6rem !important; }
+
+      /* Tighten hero top padding */
+      section.bg-glow-hero { padding-top: 110px !important; padding-bottom: 80px !important; }
+
+      /* Research cards — boost text contrast on mobile */
+      .research-card h3 { color: #e8e8e8 !important; }
+      .research-card p { color: #7c7c7c !important; }
+
+      /* Team grid — 2 col on mobile */
+      #team .team-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+      /* Analyst grid — 3 col on mobile */
+      .analysts-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+  </style>
+</body>
+</html>
